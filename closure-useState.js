@@ -4,7 +4,7 @@ let stateList = [];
 function useState(initialState) {
     // write your code here
     let state = initialState;
-    const _index = stateIndex;
+    const _index = stateIndex;///在closure中用一個變數去儲存最新的stateIndex值
 
     function getState() {
         // write your code here
