@@ -1,24 +1,26 @@
+let stateIndex = 0;
+let stateList = [];
+
 function useState(initialState) {
     // write your code here
     let state = initialState;
-    let stateList = [];
-    let stateIndex;
+    const _index = stateIndex;
 
     function getState() {
         // write your code here
         // stateIndex = stateList.length;
-        if (stateList[stateIndex]) {
-            return stateList[stateIndex];
-        }
-        stateList[stateIndex] = state;
+        if (stateList[_index] !== undefined) {
+            return stateList[_index];
+        }/// state 值是false 的時候也需要取 cache 裡面的值，所以判斷條件要是不等於undefined
+        stateList[_index] = state;
         return state;
     }
 
     function setState(updatedState) {
         // write your code here
-        let stateToUpdate = stateList[stateIndex];
-        stateToUpdate = updatedState;
-        stateList[stateIndex] = updatedState;
+        // let stateToUpdate = stateList[_index];
+        // stateToUpdate = updatedState;
+        stateList[_index] = updatedState;
         return;
     }
     stateIndex++;
@@ -28,6 +30,8 @@ function useState(initialState) {
 const [score, setScore] = useState(0);
 const [player, setPlayer] = useState('Max');
 const [test, setTest] = useState(true);
+
+console.log({ stateIndex });
 
 console.log(score()); // 0
 console.log(player()); // 'Max'
