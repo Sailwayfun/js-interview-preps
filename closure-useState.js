@@ -8,7 +8,6 @@ function useState(initialState) {
 
     function getState() {
         // write your code here
-        // stateIndex = stateList.length;
         if (stateList[_index] !== undefined) {
             return stateList[_index];
         }/// state 值是false 的時候也需要取 cache 裡面的值，所以判斷條件要是不等於undefined
@@ -18,8 +17,6 @@ function useState(initialState) {
 
     function setState(updatedState) {
         // write your code here
-        // let stateToUpdate = stateList[_index];
-        // stateToUpdate = updatedState;
         stateList[_index] = updatedState;
         return;
     }
