@@ -150,19 +150,22 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function render(vNode) {
+function renderElem(_ref) {
+  var tagName = _ref.tagName,
+    attrs = _ref.attrs,
+    children = _ref.children;
   ///create HTML node based on vNode
-  var $el = document.createElement(vNode.tagName);
+  var $el = document.createElement(tagName);
 
   ////set attributes
-  for (var _i = 0, _Object$entries = Object.entries(vNode.attrs); _i < _Object$entries.length; _i++) {
+  for (var _i = 0, _Object$entries = Object.entries(attrs); _i < _Object$entries.length; _i++) {
     var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
       key = _Object$entries$_i[0],
       value = _Object$entries$_i[1];
     $el.setAttribute(key, value);
   }
   ////set children
-  var _iterator = _createForOfIteratorHelper(vNode.children),
+  var _iterator = _createForOfIteratorHelper(children),
     _step;
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -178,6 +181,13 @@ function render(vNode) {
   return $el;
 }
 ;
+function render(vNode) {
+  if (typeof vNode === "string") {
+    var text = document.createTextNode(vNode);
+    return text;
+  } ///children 可能是text 或是 element, 如果是text 型別就會是字串而不是物件，故需要另外判斷
+  return renderElem(vNode);
+}
 },{}],"src/vdom/mount.js":[function(require,module,exports) {
 "use strict";
 
@@ -197,17 +207,21 @@ var _createElement = _interopRequireDefault(require("./createElement"));
 var _render = _interopRequireDefault(require("./render"));
 var _mount = _interopRequireDefault(require("./mount"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-var app = (0, _createElement.default)("div", {
-  attrs: {
-    id: "app"
-  },
-  children: [(0, _createElement.default)("img", {
+var createVapp = function createVapp(count) {
+  return (0, _createElement.default)("div", {
     attrs: {
-      src: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3BlM256d2Uwbnc2cGlsNGw5ampuZm11dWFxM3RnaXVrbHVlbXk1NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VC5W4OPnLlZXHsZ4xe/giphy.gif"
-    }
-  })]
-});
-var $app = (0, _render.default)(app);
+      id: "app",
+      data: count
+    },
+    children: [String(count), (0, _createElement.default)("img", {
+      attrs: {
+        src: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3BlM256d2Uwbnc2cGlsNGw5ampuZm11dWFxM3RnaXVrbHVlbXk1NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VC5W4OPnLlZXHsZ4xe/giphy.gif"
+      }
+    })]
+  });
+};
+var count = 0;
+var $app = (0, _render.default)(createVapp(count));
 (0, _mount.default)($app, "root");
 console.log($app);
 },{"./createElement":"src/vdom/createElement.js","./render":"src/vdom/render.js","./mount":"src/vdom/mount.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
