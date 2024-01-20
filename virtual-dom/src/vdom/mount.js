@@ -1,5 +1,4 @@
-export default ($app, rootId) => {
-    const target = document.getElementById(rootId);
-    target.replaceWith($app);
-    return;
+export default ($node, $target) => {
+    $target.replaceWith($node);
+    return $node;
 };

@@ -195,17 +195,54 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _default = exports.default = function _default($app, rootId) {
-  var target = document.getElementById(rootId);
-  target.replaceWith($app);
-  return;
+var _default = exports.default = function _default($node, $target) {
+  $target.replaceWith($node);
+  return $node;
 };
-},{}],"src/vdom/main.js":[function(require,module,exports) {
+},{}],"src/vdom/diff.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _render = _interopRequireDefault(require("./render"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function replaceOldNode($oldNode, vNewNode) {
+  var $newNode = (0, _render.default)(vNewNode);
+  $oldNode.replaceWith($newNode);
+  return $newNode;
+}
+var diff = function diff(vOldNode, vNewNode) {
+  if (!vNewNode) {
+    return function ($node) {
+      $node.remove();
+      return;
+    };
+  }
+  if (vOldNode === vNewNode) return function ($node) {};
+  if (typeof vOldNode === "string" || typeof vNewNode === "string") {
+    return function ($node) {
+      return replaceOldNode($node, vNewNode);
+    };
+  }
+  if (vOldNode.tagName === vNewNode.tagName) {
+    var patchAttrs = diffAttrs(vOldNode.attrs, vNewNode.attrs);
+    var patchChildren = diffChildren(vOldNode.children, vNewNode.children);
+    return function ($node) {
+      patchAttrs($node);
+      patchChildren($node);
+    };
+  }
+};
+var _default = exports.default = diff;
+},{"./render":"src/vdom/render.js"}],"src/vdom/main.js":[function(require,module,exports) {
 "use strict";
 
 var _createElement = _interopRequireDefault(require("./createElement"));
 var _render = _interopRequireDefault(require("./render"));
 var _mount = _interopRequireDefault(require("./mount"));
+var _diff = _interopRequireDefault(require("./diff"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 var createVapp = function createVapp(count) {
   return (0, _createElement.default)("div", {
@@ -221,10 +258,24 @@ var createVapp = function createVapp(count) {
   });
 };
 var count = 0;
+var vApp = createVapp(count);
 var $app = (0, _render.default)(createVapp(count));
-(0, _mount.default)($app, "root");
+var $rootEl = (0, _mount.default)($app, document.getElementById("root"));
+//////increment count state per second
+setInterval(function () {
+  count++;
+  var newVApp = createVapp(count);
+  var patch = (0, _diff.default)(vApp, newVApp);
+  ///用diffing的方式去重渲染，而非每次都重渲染整個App
+  $rootEl = patch($rootEl);
+  ///diffing把變動的地方更新到root element
+  vApp = newVApp; ///重渲染完後，更新vApp的值和reference
+  // const $app = render(vApp);
+  // $rootEl = mount($app, $rootEl);
+  console.log($rootEl);
+}, 1000);
 console.log($app);
-},{"./createElement":"src/vdom/createElement.js","./render":"src/vdom/render.js","./mount":"src/vdom/mount.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./createElement":"src/vdom/createElement.js","./render":"src/vdom/render.js","./mount":"src/vdom/mount.js","./diff":"src/vdom/diff.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

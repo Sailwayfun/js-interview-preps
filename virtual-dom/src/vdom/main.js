@@ -1,6 +1,7 @@
 import createElement from "./createElement";
 import render from "./render";
 import mount from "./mount";
+import diff from "./diff";
 
 const createVapp = (count) => createElement("div", {
     attrs: { id: "app", data: count }, children: [
@@ -13,6 +14,20 @@ const createVapp = (count) => createElement("div", {
 });
 
 let count = 0;
+let vApp = createVapp(count);
 const $app = render(createVapp(count));
-mount($app, "root");
+let $rootEl = mount($app, document.getElementById("root"));
+//////increment count state per second
+setInterval(() => {
+    count++;
+    let newVApp = createVapp(count);
+    const patch = diff(vApp, newVApp);
+    ///用diffing的方式去重渲染，而非每次都重渲染整個App
+    $rootEl = patch($rootEl);
+    ///diffing把變動的地方更新到root element
+    vApp = newVApp;///重渲染完後，更新vApp的值和reference
+    // const $app = render(vApp);
+    // $rootEl = mount($app, $rootEl);
+    console.log($rootEl);
+}, 1000);
 console.log($app);
