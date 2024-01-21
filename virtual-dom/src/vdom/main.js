@@ -15,12 +15,13 @@ const createVapp = (count) => createElement("div", {
 
 let count = 0;
 let vApp = createVapp(count);
-const $app = render(createVapp(count));
-let $rootEl = mount($app, document.getElementById("root"));
+const $app = render(vApp);
+console.log({ $app });
+let $rootEl = mount($app, document.getElementById("app"));
 //////increment count state per second
 setInterval(() => {
     count++;
-    let newVApp = createVapp(count);
+    const newVApp = createVapp(count);
     const patch = diff(vApp, newVApp);
     ///用diffing的方式去重渲染，而非每次都重渲染整個App
     $rootEl = patch($rootEl);
@@ -28,6 +29,4 @@ setInterval(() => {
     vApp = newVApp;///重渲染完後，更新vApp的值和reference
     // const $app = render(vApp);
     // $rootEl = mount($app, $rootEl);
-    console.log($rootEl);
 }, 1000);
-console.log($app);

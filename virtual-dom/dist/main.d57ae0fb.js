@@ -196,6 +196,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _default = exports.default = function _default($node, $target) {
+  console.log({
+    $target: $target
+  });
   $target.replaceWith($node);
   return $node;
 };
@@ -208,6 +211,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _render = _interopRequireDefault(require("./render"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function replaceOldNode($oldNode, vNewNode) {
   var $newNode = (0, _render.default)(vNewNode);
   $oldNode.replaceWith($newNode);
@@ -220,7 +229,9 @@ var diff = function diff(vOldNode, vNewNode) {
       return;
     };
   }
-  if (vOldNode === vNewNode) return function ($node) {};
+  if (vOldNode === vNewNode) return function ($node) {
+    return undefined;
+  };
   if (typeof vOldNode === "string" || typeof vNewNode === "string") {
     return function ($node) {
       return replaceOldNode($node, vNewNode);
@@ -228,13 +239,54 @@ var diff = function diff(vOldNode, vNewNode) {
   }
   if (vOldNode.tagName === vNewNode.tagName) {
     var patchAttrs = diffAttrs(vOldNode.attrs, vNewNode.attrs);
-    var patchChildren = diffChildren(vOldNode.children, vNewNode.children);
+    // const patchChildren = diffChildren(vOldNode.children, vNewNode.children);
     return function ($node) {
       patchAttrs($node);
-      patchChildren($node);
+      // patchChildren($node);
+      return $node;
     };
   }
 };
+function diffAttrs(oldAttrs, newAttrs) {
+  var patches = [];
+  ////set new attributes
+  var _loop = function _loop() {
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+      key = _Object$entries$_i[0],
+      value = _Object$entries$_i[1];
+    var patch = function patch($node) {
+      $node.setAttribute(key, value);
+      return $node;
+    };
+    patches.push(patch);
+  };
+  for (var _i = 0, _Object$entries = Object.entries(newAttrs); _i < _Object$entries.length; _i++) {
+    _loop();
+  }
+  ////remove old attributes not included in new node
+  var _loop2 = function _loop2(key) {
+    if (!(key in newAttrs)) {
+      var patch = function patch($node) {
+        $node.removeAttribute(key);
+        return $node;
+      };
+      patches.push(patch);
+    }
+  };
+  for (var key in oldAttrs) {
+    _loop2(key);
+  }
+  return function ($node) {
+    for (var _i2 = 0, _patches = patches; _i2 < _patches.length; _i2++) {
+      var patch = _patches[_i2];
+      patch($node);
+    }
+  };
+}
+
+// function patchChildren() {
+
+// }
 var _default = exports.default = diff;
 },{"./render":"src/vdom/render.js"}],"src/vdom/main.js":[function(require,module,exports) {
 "use strict";
@@ -259,8 +311,11 @@ var createVapp = function createVapp(count) {
 };
 var count = 0;
 var vApp = createVapp(count);
-var $app = (0, _render.default)(createVapp(count));
-var $rootEl = (0, _mount.default)($app, document.getElementById("root"));
+var $app = (0, _render.default)(vApp);
+console.log({
+  $app: $app
+});
+var $rootEl = (0, _mount.default)($app, document.getElementById("app"));
 //////increment count state per second
 setInterval(function () {
   count++;
@@ -272,9 +327,7 @@ setInterval(function () {
   vApp = newVApp; ///重渲染完後，更新vApp的值和reference
   // const $app = render(vApp);
   // $rootEl = mount($app, $rootEl);
-  console.log($rootEl);
 }, 1000);
-console.log($app);
 },{"./createElement":"src/vdom/createElement.js","./render":"src/vdom/render.js","./mount":"src/vdom/mount.js","./diff":"src/vdom/diff.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -300,7 +353,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54350" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63824" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
