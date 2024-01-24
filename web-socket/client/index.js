@@ -4,11 +4,12 @@ function createClient() {
         ws = new WebSocket('ws://localhost:9000');
         ws.onopen = () => {
             console.log('[Client] Connected to server');
+            ws.onmessage = event => {
+                console.log(`[Client] Received: ${event.data}`);
+                document.getElementById('server-msg').textContent = event.data;
+            };
         };
-        ws.onmessage = event => {
-            console.log(`[Client] Received: ${event.data}`);
-            document.getElementById('server-msg').textContent = event.data;
-        };
+
     }
 
     function disconnect() {
