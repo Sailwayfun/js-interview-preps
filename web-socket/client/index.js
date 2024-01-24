@@ -6,7 +6,6 @@ function createClient() {
             console.log('[Client] Connected to server');
         };
         ws.onmessage = event => {
-            // console.log({ message });
             console.log(`[Client] Received: ${event.data}`);
             document.getElementById('server-msg').textContent = event.data;
         };
