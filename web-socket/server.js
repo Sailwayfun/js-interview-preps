@@ -11,6 +11,10 @@ const wss = new ServerSocket({ server });
 //connection and disconnection
 wss.on('connection', ws => {
     console.log('Client connected');
+    ws.on('message', message => {
+        console.log(`[Server] Received: ${message}`);
+        ws.send(`ECHO: ${message}`);
+    });
 
     ws.on('close', () => console.log('Client disconnected'));
 });
