@@ -5,10 +5,10 @@ function createClient() {
         ws.onopen = () => {
             console.log('[Client] Connected to server');
         };
-        ws.onmessage = message => {
+        ws.onmessage = event => {
             // console.log({ message });
-            console.log(`[Client] Received: ${message.data}`);
-            document.getElementById('server-msg').textContent = message.data;
+            console.log(`[Client] Received: ${event.data}`);
+            document.getElementById('server-msg').textContent = event.data;
         };
     }
 
