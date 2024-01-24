@@ -59,7 +59,7 @@ function diffAttrs(oldAttrs, newAttrs) {
     };
 }
 
-// function patchChildren() {
+// function diffChildren() {
 
 // }
 
