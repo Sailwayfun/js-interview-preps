@@ -6,8 +6,8 @@
 // }
 
 function makeCounter(initialValue = 0) {
-    let base = initialValue - 1;
-    return () => ++base;
+    let base = initialValue;
+    return () => base++;
 }
 
 const counterWithoutArgs = makeCounter();
