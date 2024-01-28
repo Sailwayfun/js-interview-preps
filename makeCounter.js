@@ -1,8 +1,13 @@
-function makeCounter(arg) {
-    let val = arg ? arg : 0;
-    return () => {
-        return val++;
-    };
+// function makeCounter(arg) {
+//     let val = arg ? arg : 0;
+//     return () => {
+//         return val++;
+//     };
+// }
+
+function makeCounter(initialValue = 0) {
+    let base = initialValue - 1;
+    return () => ++base;
 }
 
 const counterWithoutArgs = makeCounter();
