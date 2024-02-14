@@ -3,14 +3,6 @@ function findMajorityElement(arr) {
     let result = arr[0];
     let count = 1;
     arr.forEach(element => {
-        // if (element === result) {
-        //     count++;
-        // } else if (count > 0) {
-        //     count--;
-        // } else {
-        //     result = element;
-        //     count++;
-        // }
         if (count === 0 && element !== result) {
             result = element;
             count++;
