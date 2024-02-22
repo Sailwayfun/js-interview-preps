@@ -1,7 +1,9 @@
 function difference(arr1, arr2) {
     if (arr1.length * arr2.length === 0) return [];
-    return arr1.filter(val => !arr2.includes(val));
+    return arr1.filter(val => !new Set(arr2).has(val));
 }
+
+///time complexity: Set.has():O(1), Array.prototype.includes: O(n)
 
 console.log(difference([], []));
 console.log(difference([1, 1, 2, 3], [2, 3]));
