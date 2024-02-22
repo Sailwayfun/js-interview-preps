@@ -1,6 +1,6 @@
 function difference(arr1, arr2) {
     if (arr1.length * arr2.length === 0) return [];
-    return arr1.filter(val => arr1.includes(val) && !arr2.includes(val));
+    return arr1.filter(val => !arr2.includes(val));
 }
 
 console.log(difference([], []));
